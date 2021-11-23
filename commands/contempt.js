@@ -1,4 +1,4 @@
-const loaddb = require('./loaddb.js');
+const loaddb = require('../loaddb.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 
