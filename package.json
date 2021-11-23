@@ -1,0 +1,10 @@
+{
+  "name": "contemptbot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Pat <pat.matheson@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^13.3.1"
+  }
+}
