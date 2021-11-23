@@ -1,3 +1,4 @@
+const loaddb = require('./loaddb');
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
@@ -9,6 +10,7 @@ client.commands = new Collection();
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
+
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	// Set a new item in the Collection
@@ -17,7 +19,10 @@ for (const file of commandFiles) {
 }
 
 // When the client is ready, run this code (only once)
-client.once('ready', () => {
+client.once('ready', async () => {
+    console.log('DB Preparing!');
+    await loaddb.connectDb();
+    console.log('DB Prepared!');
 	console.log('Ready!');
 });
 
