@@ -1,4 +1,4 @@
-const loaddb = require('./loaddb');
+const { connectDb } = require('./loaddb');
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
@@ -21,7 +21,7 @@ for (const file of commandFiles) {
 // When the client is ready, run this code (only once)
 client.once('ready', async () => {
     console.log('DB Preparing!');
-    await loaddb.connectDb();
+    await connectDb();
     console.log('DB Prepared!');
 	console.log('Ready!');
 });
