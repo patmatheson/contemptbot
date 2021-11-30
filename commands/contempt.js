@@ -1,6 +1,12 @@
 const { UserContempt } = require('../loaddb.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
+function addDays(date, days) {
+	const result = new Date(date);
+	result.setDate(result.getDate() + days);
+	return result;
+}
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('contempt')
@@ -30,19 +36,52 @@ module.exports = {
 			userContempt = new UserContempt();
 			userContempt.guildId = interaction.guild.id;
 			userContempt.userId = interaction.user.id;
-			userContempt.contemptCount = 0;
+			// userContempt.contemptCount = 0;
 			userContempt.id = userContemptDocumentId;
 		}
 
+		// userContempt.contemptCount = userContempt.contemptCount + 1;
+		// TODO Pull Contempt stuff into loaddb,js or similar product
 
-		userContempt.contemptCount = userContempt.contemptCount + 1;
-		console.log(`contemptCount: ${userContempt.contemptCount}`);
+		const now = new Date();
+		const nowAsString = `${now.getUTCFullYear()}-${now.getUTCMonth()}-${now.getUTCDate()}`;
+		console.log(`Current date: '${nowAsString}`);
+
+		if (!userContempt.contempts) {
+			userContempt.contempts = new Map();
+		}
+
+		const existingMapItem = userContempt.contempts.get(nowAsString);
+
+		if (existingMapItem) {
+			existingMapItem.dailyContempt = existingMapItem.dailyContempt + 1;
+		}
+		else {
+			const newMapItem = { dailyContempt: 1 };
+			userContempt.contempts.set(nowAsString, newMapItem);
+		}
+
+		const ageLimit = addDays(now, -14);
+		const ageLimitAsString = `${ageLimit.getUTCFullYear()}-${ageLimit.getUTCMonth()}-${ageLimit.getUTCDate()}`;
+
+		let accumlatedContempts = 0;
+		for (const [key, value] of userContempt.contempts.entries()) {
+			if (key < ageLimitAsString) {
+				// too old, remove from map
+				userContempt.contempts.delete(key);
+			}
+			else {
+				accumlatedContempts += value.dailyContempt;
+			}
+		}
+
+		console.log(`contemptCount: ${accumlatedContempts}`);
 
 		// save user to database with updated contempt count
 		userContempt.save();
 
 		// get the bot to send a message so you know it hates the target too.
-		await interaction.reply(`I hate you: ${name}! You have ${userContempt.contemptCount} contempts`);
+		await interaction.reply(`I hate you: ${name}! You have ${accumlatedContempts} contempts`);
 
 	},
 };

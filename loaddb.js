@@ -21,7 +21,7 @@ const userContemptSchema = new mongoose.Schema({
 		type: Map,
 		of: new mongoose.Schema({
 			dailyContempt: Number,
-		}),
+		}, { id: false, _id: false }),
 	},
 });
 
