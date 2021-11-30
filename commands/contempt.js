@@ -25,6 +25,7 @@ module.exports = {
 		console.log(`userContemptfrom DB: ${userContempt}`);
 
 		// Create new document if none exists for this guild/user
+		// someother comment
 		if (userContempt == null) {
 			console.log('new user!');
 
