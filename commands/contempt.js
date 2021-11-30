@@ -5,6 +5,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('contempt')
 		.setDescription('Hate Hate hate hate Hate!')
+		// testing comments
 		.addUserOption(option => option.setName('target').setDescription('Select a user').setRequired(true)),
 
 	async execute(interaction) {
