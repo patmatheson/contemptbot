@@ -1,4 +1,4 @@
-const loaddb = require('./loaddb');
+const { connectDb } = require('./loaddb');
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
@@ -20,22 +20,23 @@ for (const file of commandFiles) {
 
 // When the client is ready, run this code (only once)
 client.once('ready', async () => {
-    console.log('DB Preparing!');
-    await loaddb.connectDb();
-    console.log('DB Prepared!');
+	console.log('DB Preparing!');
+	await connectDb();
+	console.log('DB Prepared!');
 	console.log('Ready!');
 });
 
 client.on('interactionCreate', async interaction => {
-    if (!interaction.isCommand()) return;
-	
-    const command = client.commands.get(interaction.commandName);
+	if (!interaction.isCommand()) return;
+
+	const command = client.commands.get(interaction.commandName);
 
 	if (!command) return;
 
 	try {
 		await command.execute(interaction);
-	} catch (error) {
+	}
+	catch (error) {
 		console.error(error);
 		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 	}
