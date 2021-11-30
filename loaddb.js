@@ -17,6 +17,12 @@ const userContemptSchema = new mongoose.Schema({
 	guildId: String,
 	userId: String,
 	contemptCount: Number,
+	contempts: {
+		type: Map,
+		of: new mongoose.Schema({
+			dailyContempt: Number,
+		}),
+	},
 });
 
 const UserContempt = mongoose.model('UserContempt', userContemptSchema);
