@@ -51,8 +51,11 @@ async function getContempts(targetUser){
 	for (const [key, value] of targetUser.contempts.entries()){
 		if (key >= ageLimitAsString){
 			totalContempt += value.dailyContempt;
-			console.log (`${value.dailyContempt} contempts identified on ${key.dailyContempt}.  Adding to total, now ${totalContempt}`);
+			console.log (`${value.dailyContempt} contempts identified on ${key}.  Adding to total, now ${totalContempt}`);
+		}
 	}
+
+	return totalContempt;
 
 }
 
