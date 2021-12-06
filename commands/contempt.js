@@ -1,4 +1,4 @@
-const { UserContempt } = require('../loaddb.js');
+const { UserContempt, getContempts } = require('../contemptDBTools.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 function addDays(date, days) {
@@ -61,6 +61,9 @@ module.exports = {
 			userContempt.contempts.set(nowAsString, newMapItem);
 		}
 
+		let totalContempts = getContempts(userContempt);
+
+		/*
 		const ageLimit = addDays(now, -14);
 		const ageLimitAsString = `${ageLimit.getUTCFullYear()}-${ageLimit.getUTCMonth()}-${ageLimit.getUTCDate()}`;
 
@@ -73,9 +76,10 @@ module.exports = {
 			else {
 				accumlatedContempts += value.dailyContempt;
 			}
-		}
+		}*/
 
-		console.log(`contemptCount: ${accumlatedContempts}`);
+
+		console.log(`contemptCount: ${totalContempts}`);
 
 		// save user to database with updated contempt count
 		userContempt.save();

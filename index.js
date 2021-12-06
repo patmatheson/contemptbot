@@ -1,4 +1,4 @@
-const { connectDb } = require('./loaddb');
+const { connectDb } = require('./contemptDBTools.js');
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
