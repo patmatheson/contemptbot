@@ -61,31 +61,14 @@ module.exports = {
 			userContempt.contempts.set(nowAsString, newMapItem);
 		}
 
-		let totalContempts = getContempts(userContempt);
-
-		/*
-		const ageLimit = addDays(now, -14);
-		const ageLimitAsString = `${ageLimit.getUTCFullYear()}-${ageLimit.getUTCMonth()}-${ageLimit.getUTCDate()}`;
-
-		let accumlatedContempts = 0;
-		for (const [key, value] of userContempt.contempts.entries()) {
-			if (key < ageLimitAsString) {
-				// too old, remove from map
-				userContempt.contempts.delete(key);
-			}
-			else {
-				accumlatedContempts += value.dailyContempt;
-			}
-		}*/
-
-
-		console.log(`contemptCount: ${totalContempts}`);
-
 		// save user to database with updated contempt count
 		userContempt.save();
 
+		let totalContempts = await getContempts(userContempt);
+		console.log(`contemptCount: ${totalContempts}`);
+
 		// get the bot to send a message so you know it hates the target too.
-		await interaction.reply(`I hate you: ${name}! You have ${accumlatedContempts} contempts`);
+		await interaction.reply(`I hate you: ${name}! You have ${totalContempts} contempts`);
 
 	},
 };
