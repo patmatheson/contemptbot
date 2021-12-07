@@ -23,8 +23,6 @@ module.exports = {
 		const userContemptDocumentId = `${member.guild.id}/${member.user.id}`;
 		console.log (`userContemptDocumentId: ${userContemptDocumentId}`);
 
-		// let userContempt = UserContempt.findById(userContemptDocumentId).exec();
-
 		// check the database for documents that match both the guild and member id.
 		let userContempt = await UserContempt.findOne({ guildID: member.guild.id, userId: member.user.id }).exec();
 		console.log(`userContemptfrom DB: ${userContempt}`);
@@ -39,8 +37,10 @@ module.exports = {
 			userContempt.id = userContemptDocumentId;
 		}
 
-		await addContempt(userContempt);
-
+		userContempt.addContempt();
+		
+		await userContempt.save();
+		
 		let totalContempts = await getContempts(userContempt);
 		console.log(`contemptCount: ${totalContempts}`);
 
