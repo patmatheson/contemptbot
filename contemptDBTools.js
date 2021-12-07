@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
+const { MessagePayload } = require('discord.js');
 
 let dbconn = null;
 
@@ -19,6 +20,35 @@ async function connectDb() {
 	return dbconn;
 }
 
+const guildContemptSchema = new mongoose.Schema({
+	guildId: String,
+	contemptDays: Number,
+	contemptMax: Number,
+	contemptSpamDelay: Number,
+});
+
+const GuildContempt = mongoose.model('GuildContempt', guildContemptSchema);
+
+GuildContempt.generateDefault = function(guildId){
+	defaultContempt = new GuildContempt();
+	defaultContempt.id = guildId;
+	defaultContempt.guildId = guildId;
+	defaultContempt.contemptDays = 14;
+	defaultContempt.contemptMax = 420;
+	defaultContempt.contemptSpamDelay = 0;
+	return defaultContempt;
+}
+
+GuildContempt.findGuildOrDefault = async function(guildId){
+	const guildContempt = await GuildContempt.findOne({guildId: guildId}).exec();
+	console.log(`guildContempt settings from DB: ${guildContempt}`);
+	return guildContempt ?? GuildContempt.generateDefault(guildId);
+
+}
+
+
+
+
 const userContemptSchema = new mongoose.Schema({
 	guildId: String,
 	userId: String,
@@ -34,7 +64,7 @@ const userContemptSchema = new mongoose.Schema({
 function addContempt(userContempt){
 	const now = new Date();
 	const nowAsString = `${now.getUTCFullYear()}-${now.getUTCMonth()}-${now.getUTCDate()}`;
-	console.log(`Current date: '${nowAsString}`);
+	console.log(`Current date: ${nowAsString}`);
 
 	if (!userContempt.contempts) {
 		userContempt.contempts = new Map();
@@ -51,15 +81,9 @@ function addContempt(userContempt){
 	}
 }
 
-userContemptSchema.methods.addContempt = function(){
-	return addContempt(this);
-}
-
-const UserContempt = mongoose.model('UserContempt', userContemptSchema);
 
 
 
-// get the number of contempts in the last 14 days
 async function getContempts(targetUser){
 	const now = new Date();
 	const ageLimit = addDays(now, -14);
@@ -81,19 +105,59 @@ async function getContempts(targetUser){
 
 		}
 	}
+}
+
+userContemptSchema.methods.addContempt = function(){
+	return addContempt(this);
+}
+
+
+userContemptSchema.methods.getContempts = function(guildSetting){
+	if (!guildSetting){
+		throw new Error();
+	}
+	return getContempts(this, guildSetting);
+}
+
+
+const UserContempt = mongoose.model('UserContempt', userContemptSchema);
+
+// get the number of contempts in the last 14 days
+async function getContempts(targetUser, guildSettings){
+	const now = new Date();
+	earliestDate = 0 - guildSettings.contemptDays;
+	const ageLimit = addDays(now, earliestDate);
+	
+	const ageLimitAsString = `${ageLimit.getUTCFullYear()}-${ageLimit.getUTCMonth()}-${ageLimit.getUTCDate()}`;
+	console.log(`Earliest day to check back until: ${ageLimitAsString}`);
+	// console.log(`Current date: '${nowAsString}`);
+
+	// if targetUser doesn't exist or is invalid, there are no contempts
+	if (!targetUser.contempts)
+	{
+		return 0;
+	}
+
+
+	
+	let totalContempt = 0;
+	for (const [key, value] of targetUser.contempts.entries()){
+		if (key >= ageLimitAsString){
+			console.log (`${value.dailyContempt} contempts identified on ${key}.  Adding to total, now ${totalContempt + value.dailyContempt}`);
+			totalContempt += value.dailyContempt;
+
+		}
+	}
 
 	return totalContempt;
 
 }
 
-// add a single contempt to today
-
-
-
 module.exports = {
 	connectDb,
 	getdbconn,
 	UserContempt,
+	GuildContempt,
 	getContempts,
 	addContempt,
 };
