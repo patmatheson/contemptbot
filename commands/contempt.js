@@ -1,4 +1,4 @@
-const { UserContempt, getContempts } = require('../contemptDBTools.js');
+const { UserContempt, getContempts, addContempt } = require('../contemptDBTools.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 function addDays(date, days) {
@@ -36,33 +36,10 @@ module.exports = {
 			userContempt = new UserContempt();
 			userContempt.guildId = interaction.guild.id;
 			userContempt.userId = interaction.user.id;
-			// userContempt.contemptCount = 0;
 			userContempt.id = userContemptDocumentId;
 		}
 
-		// userContempt.contemptCount = userContempt.contemptCount + 1;
-		// TODO Pull Contempt stuff into loaddb,js or similar product
-
-		const now = new Date();
-		const nowAsString = `${now.getUTCFullYear()}-${now.getUTCMonth()}-${now.getUTCDate()}`;
-		console.log(`Current date: '${nowAsString}`);
-
-		if (!userContempt.contempts) {
-			userContempt.contempts = new Map();
-		}
-
-		const existingMapItem = userContempt.contempts.get(nowAsString);
-
-		if (existingMapItem) {
-			existingMapItem.dailyContempt = existingMapItem.dailyContempt + 1;
-		}
-		else {
-			const newMapItem = { dailyContempt: 1 };
-			userContempt.contempts.set(nowAsString, newMapItem);
-		}
-
-		// save user to database with updated contempt count
-		userContempt.save();
+		await addContempt(userContempt);
 
 		let totalContempts = await getContempts(userContempt);
 		console.log(`contemptCount: ${totalContempts}`);

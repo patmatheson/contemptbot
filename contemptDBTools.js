@@ -33,6 +33,8 @@ const userContemptSchema = new mongoose.Schema({
 
 const UserContempt = mongoose.model('UserContempt', userContemptSchema);
 
+
+
 // get the number of contempts in the last 14 days
 async function getContempts(targetUser){
 	const now = new Date();
@@ -50,12 +52,38 @@ async function getContempts(targetUser){
 	let totalContempt = 0;
 	for (const [key, value] of targetUser.contempts.entries()){
 		if (key >= ageLimitAsString){
+			console.log (`${value.dailyContempt} contempts identified on ${key}.  Adding to total, now ${totalContempt + 1}`);
 			totalContempt += value.dailyContempt;
-			console.log (`${value.dailyContempt} contempts identified on ${key}.  Adding to total, now ${totalContempt}`);
+
 		}
 	}
 
 	return totalContempt;
+
+}
+
+// add a single contempt to today
+async function addContempt(userContempt){
+	const now = new Date();
+	const nowAsString = `${now.getUTCFullYear()}-${now.getUTCMonth()}-${now.getUTCDate()}`;
+	console.log(`Current date: '${nowAsString}`);
+
+	if (!userContempt.contempts) {
+		userContempt.contempts = new Map();
+	}
+
+	const existingMapItem = userContempt.contempts.get(nowAsString);
+
+	if (existingMapItem) {
+		existingMapItem.dailyContempt = existingMapItem.dailyContempt + 1;
+	}
+	else {
+		const newMapItem = { dailyContempt: 1 };
+		userContempt.contempts.set(nowAsString, newMapItem);
+	}
+
+	// save user to database with updated contempt count
+	userContempt.save();
 
 }
 
@@ -65,4 +93,5 @@ module.exports = {
 	getdbconn,
 	UserContempt,
 	getContempts,
+	addContempt,
 };
