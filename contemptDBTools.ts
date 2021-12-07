@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
-const { MessagePayload } = require('discord.js');
+import * as mongoose from 'mongoose';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import { MessagePayload } from 'discord.js';
 
 let dbconn = null;
 
@@ -20,17 +20,35 @@ async function connectDb() {
 	return dbconn;
 }
 
-const guildContemptSchema = new mongoose.Schema({
+interface IGuildContempt{
+	id: string;
+	guildId: string;
+	contemptDays: number;
+	contemptMax: number;
+	contemptSpamDelay: number;
+}
+
+interface IGuildContemptModel extends mongoose.Model<IGuildContempt> {
+	findGuildOrDefault(guildId: string): Promise<IGuildContempt>;
+}
+
+const guildContemptSchema = new mongoose.Schema<IGuildContempt>({
 	guildId: String,
 	contemptDays: Number,
 	contemptMax: Number,
 	contemptSpamDelay: Number,
 });
 
-const GuildContempt = mongoose.model('GuildContempt', guildContemptSchema);
+guildContemptSchema.static('findGuildOrDefault', async function(guildId){
+	const guildContempt = await GuildContempt.findOne({guildId: guildId}).exec();
+	console.log(`guildContempt settings from DB: ${guildContempt}`);
+	return guildContempt ?? generateDefault(guildId);
+});
 
-GuildContempt.generateDefault = function(guildId){
-	defaultContempt = new GuildContempt();
+const GuildContempt = mongoose.model<IGuildContempt, IGuildContemptModel>('GuildContempt', guildContemptSchema);
+
+function generateDefault(guildId){
+	let defaultContempt:IGuildContempt = new GuildContempt();
 	defaultContempt.id = guildId;
 	defaultContempt.guildId = guildId;
 	defaultContempt.contemptDays = 14;
@@ -38,14 +56,7 @@ GuildContempt.generateDefault = function(guildId){
 	defaultContempt.contemptSpamDelay = 0;
 	return defaultContempt;
 }
-
-GuildContempt.findGuildOrDefault = async function(guildId){
-	const guildContempt = await GuildContempt.findOne({guildId: guildId}).exec();
-	console.log(`guildContempt settings from DB: ${guildContempt}`);
-	return guildContempt ?? GuildContempt.generateDefault(guildId);
-
-}
-
+// (<any>GuildContempt).generateDefault = generateDefault;
 
 
 
@@ -82,50 +93,10 @@ function addContempt(userContempt){
 }
 
 
-
-
-async function getContempts(targetUser){
-	const now = new Date();
-	const ageLimit = addDays(now, -14);
-	const ageLimitAsString = `${ageLimit.getUTCFullYear()}-${ageLimit.getUTCMonth()}-${ageLimit.getUTCDate()}`;
-
-	// console.log(`Current date: '${nowAsString}`);
-
-	// if targetUser doesn't exist or is invalid, there are no contempts
-	if (!targetUser.contempts)
-	{
-		return 0;
-	}
-	
-	let totalContempt = 0;
-	for (const [key, value] of targetUser.contempts.entries()){
-		if (key >= ageLimitAsString){
-			console.log (`${value.dailyContempt} contempts identified on ${key}.  Adding to total, now ${totalContempt + value.dailyContempt}`);
-			totalContempt += value.dailyContempt;
-
-		}
-	}
-}
-
-userContemptSchema.methods.addContempt = function(){
-	return addContempt(this);
-}
-
-
-userContemptSchema.methods.getContempts = function(guildSetting){
-	if (!guildSetting){
-		throw new Error();
-	}
-	return getContempts(this, guildSetting);
-}
-
-
-const UserContempt = mongoose.model('UserContempt', userContemptSchema);
-
 // get the number of contempts in the last 14 days
 async function getContempts(targetUser, guildSettings){
 	const now = new Date();
-	earliestDate = 0 - guildSettings.contemptDays;
+	let earliestDate:number = 0 - guildSettings.contemptDays;
 	const ageLimit = addDays(now, earliestDate);
 	
 	const ageLimitAsString = `${ageLimit.getUTCFullYear()}-${ageLimit.getUTCMonth()}-${ageLimit.getUTCDate()}`;
@@ -153,7 +124,24 @@ async function getContempts(targetUser, guildSettings){
 
 }
 
-module.exports = {
+userContemptSchema.methods.addContempt = function(){
+	return addContempt(this);
+}
+
+
+userContemptSchema.methods.getContempts = function(guildSetting){
+	if (!guildSetting){
+		throw new Error();
+	}
+	return getContempts(this, guildSetting);
+}
+
+
+const UserContempt = mongoose.model('UserContempt', userContemptSchema);
+
+
+
+export {
 	connectDb,
 	getdbconn,
 	UserContempt,

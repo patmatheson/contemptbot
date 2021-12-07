@@ -1,5 +1,5 @@
-const { UserContempt, getContempts, addContempt, GuildContempt } = require('../contemptDBTools.js');
-const { SlashCommandBuilder } = require('@discordjs/builders');
+import { UserContempt, getContempts, addContempt, GuildContempt } from '../contemptDBTools.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
 
 function addDays(date, days) {
 	const result = new Date(date);
@@ -7,7 +7,7 @@ function addDays(date, days) {
 	return result;
 }
 
-module.exports = {
+const command = {
 	data: new SlashCommandBuilder()
 		.setName('contempt')
 		.setDescription('Hate Hate hate hate Hate!')
@@ -31,8 +31,6 @@ module.exports = {
 		let userContempt = await UserContempt.findOne({ guildID: member.guild.id, userId: member.user.id }).exec();
 		console.log(`userContemptfrom DB: ${userContempt}`);
 
-		
-
 		// Create new document if none exists for this guild/user
 		if (userContempt == null) {
 			console.log('new user!');
@@ -44,8 +42,6 @@ module.exports = {
 		}
 
 		userContempt.addContempt();
-		
-		
 
 		await userContempt.save();
 		
@@ -54,6 +50,9 @@ module.exports = {
 
 		// get the bot to send a message so you know it hates the target too.
 		await interaction.reply(`I hate you: ${name}! You have ${totalContempts} contempts`);
-
 	},
+}
+
+export {
+	command,
 };
