@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MessagePayload } from 'discord.js';
+import process from 'process';
 
 let dbconn = null;
 
@@ -15,8 +16,12 @@ function addDays(date, days) {
 }
 
 async function connectDb() {
-	const mongoServer = await MongoMemoryServer.create();
-	dbconn = await mongoose.connect(mongoServer.getUri(), { dbName: 'verifyMASTER' });
+	let dbConnString = process.env.MONGO_CONN_STRING;
+	if (!dbConnString) {
+		const mongoServer = await MongoMemoryServer.create();
+		dbConnString = mongoServer.getUri();
+	}
+	dbconn = await mongoose.connect(dbConnString, { dbName: 'verifyMASTER' });
 	return dbconn;
 }
 
