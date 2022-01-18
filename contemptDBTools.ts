@@ -74,7 +74,7 @@ const userContemptSchema = new mongoose.Schema({
 
 function addContempt(userContempt){
 	const now = new Date();
-	const nowAsString = `${now.getUTCFullYear()}-${now.getUTCMonth()}-${now.getUTCDate()}`;
+	const nowAsString = `${now.getUTCFullYear()}-${now.getUTCMonth() + 1}-${now.getUTCDate()}`;
 	console.log(`Current date: ${nowAsString}`);
 
 	if (!userContempt.contempts) {
@@ -99,7 +99,7 @@ async function getContempts(targetUser, guildSettings){
 	let earliestDate:number = 0 - guildSettings.contemptDays;
 	const ageLimit = addDays(now, earliestDate);
 	
-	const ageLimitAsString = `${ageLimit.getUTCFullYear()}-${ageLimit.getUTCMonth()}-${ageLimit.getUTCDate()}`;
+	const ageLimitAsString = `${ageLimit.getUTCFullYear()}-${ageLimit.getUTCMonth() + 1}-${ageLimit.getUTCDate()}`;
 	console.log(`Earliest day to check back until: ${ageLimitAsString}`);
 	// console.log(`Current date: '${nowAsString}`);
 
@@ -114,7 +114,7 @@ async function getContempts(targetUser, guildSettings){
 	let totalContempt = 0;
 	for (const [key, value] of targetUser.contempts.entries()){
 		console.log(`${value.dailyContempt} contempts identified on ${key}.`);
-		if (key >= ageLimitAsString){
+		if (new Date(key) >= ageLimit){
 			console.log (`${value.dailyContempt} contempts identified on ${key}.  Adding to total, now ${totalContempt + value.dailyContempt}`);
 			totalContempt += value.dailyContempt;
 		}
