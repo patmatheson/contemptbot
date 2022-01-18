@@ -108,6 +108,11 @@
             "description": "remove all contempts.  Tabula Rasa",
             "type": 1,
 			"default_permission": false
-        }
+        },
+		{
+			"name": "user",
+			"description": "send contempt to a user",
+			"type": 6
+		}
     ]
 }

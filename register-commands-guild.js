@@ -12,7 +12,7 @@ let commands = JSON.parse(jsonData);
 //console.log(commands);
 
 const data = JSON.stringify(commands);
-console.log(data);
+//console.log(data);
 
 const options ={
     hostname: hostname,
@@ -26,7 +26,6 @@ const options ={
     }
 }
 
-/*
 const req = https.request(options, res => {
     console.log(`statusCode: ${res.statusCode}`)
   
@@ -40,4 +39,4 @@ req.on('error', error => {
 })
 
 req.write(data)
-req.end()*/
+req.end()
