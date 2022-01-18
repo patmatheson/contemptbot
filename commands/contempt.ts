@@ -14,10 +14,30 @@ const command = {
 		.addUserOption(option => option.setName('target').setDescription('Select a user').setRequired(true)),
 
 	async execute(interaction) {
+		//check subcommand menu, subcommands
+
+		if (interaction.options.getSubcommandGroup(false) == 'send'){
+			if (interaction.options.getSubcommand(false) == 'user') {
+				console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
+				console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
+				await sendContempt(interaction);
+			}
+			else if (interaction.options.getSubcommand(false) == 'scorn') {
+				console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
+				console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
+				// Send Scorn TODO
+			}
+
+		}
+	},
+
+
+}
+async function sendContempt ( interaction) {
 		// get target member information from message interaction.  Uses options to get target, not sender
-		const member = interaction.options.getMember('target');
+		const member = interaction.options.getMember('user');
 		// if member has a nickname on this server get that, otherwise get the member name
-		const name = member.nickname ?? member.user.username;
+		const name = member.guild.nickname ?? member.user.username;
 
 		// assign the combination of guild/user id for DB id number, so each user is tracked per guild
 		const userContemptDocumentId = `${member.guild.id}/${member.user.id}`;
@@ -50,8 +70,9 @@ const command = {
 
 		// get the bot to send a message so you know it hates the target too.
 		await interaction.reply(`I hate you: ${name}! You have ${totalContempts} contempts`);
-	},
+		console.log('this is a breakpoint');
 }
+
 
 export {
 	command,

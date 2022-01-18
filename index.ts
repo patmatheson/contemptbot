@@ -22,10 +22,13 @@ client.once('ready', async () => {
 });
 
 client.on('interactionCreate', async interaction => {
-	console.log('test interaction');
-	if (!interaction.isCommand()) return;
+	
+	if ((interaction.type=="APPLICATION_COMMAND")) console.log("Application command");
+	
+	if (!(interaction.isApplicationCommand())) return;
 
 	const command = commands.get(interaction.commandName);
+
 
 	if (!command) return;
 

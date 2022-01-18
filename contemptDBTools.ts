@@ -113,10 +113,10 @@ async function getContempts(targetUser, guildSettings){
 	
 	let totalContempt = 0;
 	for (const [key, value] of targetUser.contempts.entries()){
+		console.log(`${value.dailyContempt} contempts identified on ${key}.`);
 		if (key >= ageLimitAsString){
 			console.log (`${value.dailyContempt} contempts identified on ${key}.  Adding to total, now ${totalContempt + value.dailyContempt}`);
 			totalContempt += value.dailyContempt;
-
 		}
 	}
 
