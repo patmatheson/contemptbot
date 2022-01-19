@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MessagePayload } from 'discord.js';
-import process from 'process';
+import * as process from 'process';
 
 let dbconn = null;
 
