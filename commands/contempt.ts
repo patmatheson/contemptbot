@@ -29,6 +29,18 @@ const command = {
 			}
 
 		}
+		else if (interaction.options.getSubcommandGroup(false) == 'show'){
+			if (interaction.options.getSubcommand(false) == 'user') {
+				console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
+				console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
+				await showContempt(interaction);
+			}
+			else if (interaction.options.getSubcommand(false) == 'scorn') {
+				console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
+				console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
+				// Send Scorn TODO
+			}
+		}
 	},
 
 
@@ -70,9 +82,37 @@ async function sendContempt ( interaction) {
 
 		// get the bot to send a message so you know it hates the target too.
 		await interaction.reply(`I hate you: ${name}! You have ${totalContempts} contempts`);
-		console.log('this is a breakpoint');
 }
 
+//this is very close to sendContempt, consider making these 1 function with variable to determine send/receive
+async function showContempt ( interaction) {
+	// get target member information from message interaction.  Uses options to get target, not sender
+	const member = interaction.options.getMember('user');
+	// if member has a nickname on this server get that, otherwise get the member name
+	const name = member.guild.nickname ?? member.user.username;
+
+	const userContemptDocumentId = `${member.guild.id}/${member.user.id}`;
+	console.log (`userContemptDocumentId: ${userContemptDocumentId}`);
+
+	const guildContempt = await GuildContempt.findGuildOrDefault(member.guild.id);
+	console.log(`guildContempt settings from DB: ${guildContempt}`);
+
+	// check the database for documents that match both the guild and member id.
+	let userContempt = await UserContempt.findOne({ guildID: member.guild.id, userId: member.user.id }).exec();
+	console.log(`userContemptfrom DB: ${userContempt}`);
+
+	if (userContempt == null) {
+		console.log(`User ${name} not found`);
+		await interaction.reply(`${name} has no contempt (for now).`);
+		return;
+	}
+
+	let totalContempts = await userContempt.getContempts(guildContempt);
+	console.log(`contemptCount: ${totalContempts}`);
+	await interaction.reply(`${name} has ${totalContempts} contempts.  I hate them so much.`);
+
+	
+}
 
 export {
 	command,
