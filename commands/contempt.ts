@@ -29,7 +29,7 @@ const command = {
 			}
 
 		}
-		else if (interaction.options.getSubcommandGroup(false) == 'show'){
+		else if (interaction.options.getSubcommandGroup(false) == 'list'){
 			if (interaction.options.getSubcommand(false) == 'user') {
 				console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
 				console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
@@ -111,7 +111,7 @@ async function showContempt ( interaction) {
 	console.log(`contemptCount: ${totalContempts}`);
 	await interaction.reply(`${name} has ${totalContempts} contempts.  I hate them so much.`);
 
-	
+
 }
 
 export {
