@@ -126,9 +126,9 @@ async function listAllContempts (interaction) {
 	let userContempt = await UserContempt.findOne({});
 	let allContempt = await userContempt.getAllContempts(guildContempt);
 
-	let outputString = "\n";
+	let outputString = "I hate you all this much: \n";
 	for (const [key, value] of allContempt.entries()){
-		outputString = outputString + `User: ${key}: ${value} Contempts \n`;
+		outputString = outputString + `${key}: ${value} Contempts \n`;
 	}
 	console.log(outputString);
 
