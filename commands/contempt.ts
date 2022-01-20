@@ -1,5 +1,7 @@
 import { UserContempt, getContempts, addContempt, GuildContempt } from '../contemptDBTools.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
+import { Mongoose } from 'mongoose';
+import { DiscordAPIError } from 'discord.js';
 
 function addDays(date, days) {
 	const result = new Date(date);
@@ -31,14 +33,14 @@ const command = {
 		}
 		else if (interaction.options.getSubcommandGroup(false) == 'list'){
 			if (interaction.options.getSubcommand(false) == 'user') {
-				console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
+				console.log (`SubcommandGroup ${interaction.options.getSubcommandGroup(false)}`);
 				console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
 				await showContempt(interaction);
 			}
-			else if (interaction.options.getSubcommand(false) == 'scorn') {
+			else if (interaction.options.getSubcommand(false) == 'list') {
 				console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
 				console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
-				// Send Scorn TODO
+				await listAllContempts(interaction);
 			}
 		}
 	},
@@ -69,7 +71,8 @@ async function sendContempt ( interaction) {
 
 			userContempt = new UserContempt();
 			userContempt.guildId = interaction.guild.id;
-			userContempt.userId = interaction.user.id;
+			userContempt.userId = member.user.id;
+			userContempt.userName = name;
 			userContempt.id = userContemptDocumentId;
 		}
 
@@ -110,9 +113,32 @@ async function showContempt ( interaction) {
 	let totalContempts = await userContempt.getContempts(guildContempt);
 	console.log(`contemptCount: ${totalContempts}`);
 	await interaction.reply(`${name} has ${totalContempts} contempts.  I hate them so much.`);
-
-
 }
+
+//need to change this to just show 1 guild contempts.
+async function listAllContempts (interaction) {
+
+	const guildContempt = await GuildContempt.findGuildOrDefault(interaction.member.guild.id);
+	console.log(`guildContempt settings from DB: ${guildContempt}`);
+
+	await interaction.reply({content: `Fetching all contempts sent...`, ephemeral: true} );
+
+	let userContempt = await UserContempt.findOne({});
+	let allContempt = await userContempt.getAllContempts(guildContempt);
+
+	let outputString = "\n";
+	for (const [key, value] of allContempt.entries()){
+		outputString = outputString + `User: ${key}: ${value} Contempts \n`;
+	}
+	console.log(outputString);
+
+	await interaction.followUp(outputString);
+
+	console.log(`Temporary BP`);
+
+	
+}
+
 
 export {
 	command,

@@ -64,11 +64,11 @@ function generateDefault(guildId){
 // (<any>GuildContempt).generateDefault = generateDefault;
 
 
-
 const userContemptSchema = new mongoose.Schema({
 	guildId: String,
 	userId: String,
 	contemptCount: Number,
+	userName: String,
 	contempts: {
 		type: Map,
 		of: new mongoose.Schema({
@@ -97,6 +97,37 @@ function addContempt(userContempt){
 	}
 }
 
+async function getAllContempts(guildSettings){
+	const now = new Date();
+	let earliestDate:number = 0 - guildSettings.contemptDays;
+	const ageLimit = addDays(now, earliestDate);
+
+	let returnContempts = new Map();
+
+	let allContempts = await UserContempt.find().exec();
+
+	let totalContempt = 0;
+	
+	for (const docs of allContempts){
+		totalContempt = 0;
+		for (const [key, value] of docs.contempts.entries()){
+			console.log(`${value.dailyContempt} contempts identified on ${key}.`);
+			if (new Date(key) >= ageLimit){
+				console.log (`${value.dailyContempt} contempts identified on ${key}.  Adding to total, now ${totalContempt + value.dailyContempt}`);
+				totalContempt += value.dailyContempt;
+			}
+		}
+		if (returnContempts.has(docs.userName)) {
+			returnContempts.set(docs.userName, returnContempts.get(docs.userName) + totalContempt);	
+		}
+		else {
+			returnContempts.set(docs.userName, totalContempt);	
+		}
+	}
+
+	return returnContempts;
+
+}
 
 // get the number of contempts in the last 14 days
 async function getContempts(targetUser, guildSettings){
@@ -113,8 +144,6 @@ async function getContempts(targetUser, guildSettings){
 	{
 		return 0;
 	}
-
-
 	
 	let totalContempt = 0;
 	for (const [key, value] of targetUser.contempts.entries()){
@@ -141,10 +170,14 @@ userContemptSchema.methods.getContempts = function(guildSetting){
 	return getContempts(this, guildSetting);
 }
 
+userContemptSchema.methods.getAllContempts = function(guildSetting){
+	if (!guildSetting){
+		throw new Error();
+	}
+	return getAllContempts(guildSetting);
+}
 
 const UserContempt = mongoose.model('UserContempt', userContemptSchema);
-
-
 
 export {
 	connectDb,
