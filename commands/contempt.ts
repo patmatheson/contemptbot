@@ -37,7 +37,7 @@ const command = {
 				console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
 				await showContempt(interaction);
 			}
-			else if (interaction.options.getSubcommand(false) == 'list') {
+			else if (interaction.options.getSubcommand(false) == 'all') {
 				console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
 				console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
 				await listAllContempts(interaction);

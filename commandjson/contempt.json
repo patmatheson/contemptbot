@@ -20,25 +20,6 @@
 							"required": true
 						}
 					]
-                },
-                {
-                    "name": "scorn",
-					"description": "send contempt to a user with a good reason",
-					"type": 1,
-					"options":[
-						{
-							"name": "user",
-							"description": "send contempt to this user",
-							"type": 6,
-							"required": true
-						},
-						{
-							"name": "reason",
-							"description": "the reason you are sending this contempt",
-							"type": 3,
-							"required": true
-						}						
-					]
                 }
             ]
         },
@@ -62,57 +43,11 @@
 					
                 },
                 {
-                    "name": "list",
+                    "name": "all",
 					"description": "see how much contempt everyone has",
-					"type": 1
-                },
-				{
-                    "name": "top",
-					"description": "see who has the top 5 most contempt",
-					"type": 1
-                },
-				{
-                    "name": "weekly",
-					"description": "see how much contempt everyone has this week",
 					"type": 1
                 }
             ]
-        },
-		{
-            "name": "forgive",
-            "description": "forgive someone's contempt.  We've all made mistakes",
-            "type": 2,
-            "options": [
-                {
-                    "name": "user",
-					"description": "forgive one contempt on one user",
-					"type": 1,
-					"options":[
-						{
-							"name": "user",
-							"description": "user to forgive the contempt of",
-							"type": 6,
-							"required": true
-						}
-					]
-                },
-                {
-                    "name": "last",
-					"description": "forgive the last contempt given",
-					"type": 1
-                }
-			]
-        },
-		{
-            "name": "clear",
-            "description": "remove all contempts.  Tabula Rasa",
-            "type": 1,
-			"default_permission": false
-        },
-		{
-			"name": "user",
-			"description": "send contempt to a user",
-			"type": 6
-		}
+        }
     ]
 }
