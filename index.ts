@@ -12,6 +12,8 @@ const commands:any = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 commands.set(contemptCommand.command.data.name, contemptCommand.command);
+commands.set("Send Contempt", contemptCommand.command);
+
 
 // When the client is ready, run this code (only once)
 client.once('ready', async () => {
