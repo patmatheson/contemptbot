@@ -17,30 +17,37 @@ const command = {
 
 	async execute(interaction) {
 		//check subcommand menu, subcommands
+		if(interaction.isCommand()) {
+			if (interaction.options.getSubcommandGroup(false) == 'send'){
+				if (interaction.options.getSubcommand(false) == 'user') {
+					console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
+					console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
+					await sendContempt(interaction);
+				}
+				else if (interaction.options.getSubcommand(false) == 'scorn') {
+					console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
+					console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
+					// Send Scorn TODO
+				}
 
-		if (interaction.options.getSubcommandGroup(false) == 'send'){
-			if (interaction.options.getSubcommand(false) == 'user') {
-				console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
-				console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
-				await sendContempt(interaction);
 			}
-			else if (interaction.options.getSubcommand(false) == 'scorn') {
-				console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
-				console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
-				// Send Scorn TODO
+			else if (interaction.options.getSubcommandGroup(false) == 'list'){
+				if (interaction.options.getSubcommand(false) == 'user') {
+					console.log (`SubcommandGroup ${interaction.options.getSubcommandGroup(false)}`);
+					console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
+					await showContempt(interaction);
+				}
+				else if (interaction.options.getSubcommand(false) == 'all') {
+					console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
+					console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
+					await listAllContempts(interaction);
+				}
 			}
-
 		}
-		else if (interaction.options.getSubcommandGroup(false) == 'list'){
-			if (interaction.options.getSubcommand(false) == 'user') {
-				console.log (`SubcommandGroup ${interaction.options.getSubcommandGroup(false)}`);
-				console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
-				await showContempt(interaction);
-			}
-			else if (interaction.options.getSubcommand(false) == 'all') {
-				console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
-				console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
-				await listAllContempts(interaction);
+		else if (interaction.isContextMenu()){
+			if (interaction.commandName == 'Send Contempt'){
+				console.log (`Context Command ${interaction.commandName} selected...`);
+				await sendContempt(interaction);
 			}
 		}
 	},
