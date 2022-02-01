@@ -1,0 +1,53 @@
+{
+    "name": "contempt",
+    "type": 1,
+    "description": "send and recieve all the hate",
+    "options": [
+        {
+            "name": "send",
+            "description": "sending contempt",
+            "type": 2,
+            "options": [
+                {
+                    "name": "user",
+					"description": "send contempt to a user",
+					"type": 1,
+					"options":[
+						{
+							"name": "user",
+							"description": "send contempt to this user",
+							"type": 6,
+							"required": true
+						}
+					]
+                }
+            ]
+        },
+        {
+            "name": "list",
+            "description": "see how much contempt is out there",
+            "type": 2,
+            "options": [
+                {
+                    "name": "user",
+					"description": "see how much contempt a user has",
+					"type": 1,
+					"options":[
+						{
+							"name": "user",
+							"description": "see how much contempt this user has",
+							"type": 6,
+							"required": true
+						}
+					]
+					
+                },
+                {
+                    "name": "all",
+					"description": "see how much contempt everyone has",
+					"type": 1
+                }
+            ]
+        }
+    ]
+}

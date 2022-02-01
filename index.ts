@@ -1,22 +1,19 @@
-const { connectDb } = require('./contemptDBTools.js');
-const fs = require('fs');
-const { Client, Collection, Intents } = require('discord.js');
-const { token } = require('./config.json');
+import { connectDb } from './contemptDBTools';
+import * as fs from 'fs';
+import { Client, Collection, Intents } from 'discord.js';
+import { token } from './config.json';
+import * as contemptCommand from './commands/contempt';
 
 // Create a new client instance
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
-client.commands = new Collection();
+const commands:any = new Collection();
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
+commands.set(contemptCommand.command.data.name, contemptCommand.command);
+commands.set("Send Contempt", contemptCommand.command);
 
-for (const file of commandFiles) {
-	const command = require(`./commands/${file}`);
-	// Set a new item in the Collection
-	// With the key as the command name and the value as the exported module
-	client.commands.set(command.data.name, command);
-}
 
 // When the client is ready, run this code (only once)
 client.once('ready', async () => {
@@ -27,9 +24,13 @@ client.once('ready', async () => {
 });
 
 client.on('interactionCreate', async interaction => {
-	if (!interaction.isCommand()) return;
+	
+	if ((interaction.type=="APPLICATION_COMMAND")) console.log("Application command");
+	
+	if (!(interaction.isApplicationCommand())) return;
 
-	const command = client.commands.get(interaction.commandName);
+	const command = commands.get(interaction.commandName);
+
 
 	if (!command) return;
 
