@@ -4,7 +4,7 @@ import { Client, Collection, Intents } from 'discord.js';
 import { token } from './config.json';
 import * as contemptCommand from './commands/contempt';
 
-// Create a new client instance
+//TODO Correctly setup commands
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 const commands:any = new Collection();

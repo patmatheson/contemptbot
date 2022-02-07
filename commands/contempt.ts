@@ -2,12 +2,9 @@ import { UserContempt, getContempts, addContempt, GuildContempt } from '../conte
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Mongoose } from 'mongoose';
 import { DiscordAPIError } from 'discord.js';
+import { ContemptTools } from '../contemptTools'
+import { IContempt } from '../types'
 
-function addDays(date, days) {
-	const result = new Date(date);
-	result.setDate(result.getDate() + days);
-	return result;
-}
 
 const command = {
 	data: new SlashCommandBuilder()
@@ -22,7 +19,9 @@ const command = {
 				if (interaction.options.getSubcommand(false) == 'user') {
 					console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
 					console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
+					
 					await sendContempt(interaction);
+					await newSendContempt(interaction);
 				}
 				else if (interaction.options.getSubcommand(false) == 'scorn') {
 					console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
@@ -51,10 +50,28 @@ const command = {
 			}
 		}
 	},
-
-
 }
-async function sendContempt ( interaction) {
+
+async function newSendContempt(interaction): Promise<void>
+{
+	const contemptToSend = convertSendContemptToCommand(interaction);
+	ContemptTools.addAContempt(contemptToSend);
+}
+
+function convertSendContemptToCommand (interaction) : IContempt
+{
+	const target = interaction.options.getMember('user');
+	// if member has a nickname on this server get that, otherwise get the member name
+	const targetName = target.guild.nickname ?? target.user.username;
+	const senderName = interaction.user.nickname ?? interaction.user.username;
+	return { 
+		guildId: target.guild.id,
+		target: { id: target.user.id, name: targetName},
+		sender: { id: interaction.user.id, name: senderName }
+	};
+}
+
+async function sendContempt ( interaction ) {
 		// get target member information from message interaction.  Uses options to get target, not sender
 		const member = interaction.options.getMember('user');
 		// if member has a nickname on this server get that, otherwise get the member name
