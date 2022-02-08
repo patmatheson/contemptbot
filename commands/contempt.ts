@@ -18,8 +18,8 @@ const command = {
 					console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
 					console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
 					
-					//await sendContempt(interaction);
-					await newSendContempt(interaction);
+					await sendContempt(interaction);
+					//await newSendContempt(interaction);
 				}
 				else if (interaction.options.getSubcommand(false) == 'scorn') {
 					console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
@@ -32,14 +32,14 @@ const command = {
 				if (interaction.options.getSubcommand(false) == 'user') {
 					console.log (`SubcommandGroup ${interaction.options.getSubcommandGroup(false)}`);
 					console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
-					//await showContempt(interaction);
-					await newShowContempt(interaction);
+					await showContempt(interaction);
+					//await newShowContempt(interaction);
 				}
 				else if (interaction.options.getSubcommand(false) == 'all') {
 					console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
 					console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
-					//await listAllContempts(interaction);
-					await newListAllContempts(interaction);
+					await listAllContempts(interaction);
+					//await newListAllContempts(interaction);
 				}
 			}
 		}
