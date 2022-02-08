@@ -1,9 +1,12 @@
 import { connectDb } from './contemptDBTools';
 import * as fs from 'fs';
 import { Client, Collection, Intents } from 'discord.js';
-import { token } from './config.json';
+//import { token } from './config.json';
 import * as contemptCommand from './commands/contempt';
+import * as process from 'process';
 
+
+const token = process.env.DISCORD_BOT_TOKEN;
 // Create a new client instance
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 

@@ -3,4 +3,5 @@ WORKDIR /app
 EXPOSE 80 443
 EXPOSE 27017 27018
 COPY . .
+RUN npm install && npx tsc
 CMD ["node", "out/index.js"]
