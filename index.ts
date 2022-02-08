@@ -7,11 +7,11 @@ import * as process from 'process';
 
 var http = require('http');
 
-http.get({'host': 'api.ipify.org', 'port': 80, 'path': '/'}, function(resp) {
-  resp.on('data', function(ip) {
-    console.log("My public IP address is: " + ip);
-  });
-});
+http.createServer(function (req, res) {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.end('Iam m still alive\n');
+}).listen(80, "x.x.x.x");
+console.log('Server listening to port 80.');
 
 
 const token = process.env.DISCORD_BOT_TOKEN;
