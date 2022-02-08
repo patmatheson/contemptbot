@@ -5,6 +5,14 @@ import { Client, Collection, Intents } from 'discord.js';
 import * as contemptCommand from './commands/contempt';
 import * as process from 'process';
 
+var http = require('http');
+
+http.get({'host': 'api.ipify.org', 'port': 80, 'path': '/'}, function(resp) {
+  resp.on('data', function(ip) {
+    console.log("My public IP address is: " + ip);
+  });
+});
+
 
 const token = process.env.DISCORD_BOT_TOKEN;
 // Create a new client instance
