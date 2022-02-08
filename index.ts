@@ -8,7 +8,7 @@ import * as contemptCommand from './commands/contempt';
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 const commands:any = new Collection();
-
+// add little change
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 commands.set(contemptCommand.command.data.name, contemptCommand.command);
