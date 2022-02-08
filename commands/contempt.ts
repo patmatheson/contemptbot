@@ -1,9 +1,7 @@
-import { UserContempt, getContempts, addContempt, GuildContempt } from '../contemptDBTools.js';
+import { UserContempt, getContempts, addContempt, GuildContempt, newGetAllContempts } from '../contemptDBTools.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { Mongoose } from 'mongoose';
 import { DiscordAPIError } from 'discord.js';
 import { ContemptTools } from '../contemptTools'
-import { IContempt } from '../types'
 
 
 const command = {
@@ -20,7 +18,7 @@ const command = {
 					console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
 					console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
 					
-					await sendContempt(interaction);
+					//await sendContempt(interaction);
 					await newSendContempt(interaction);
 				}
 				else if (interaction.options.getSubcommand(false) == 'scorn') {
@@ -34,12 +32,14 @@ const command = {
 				if (interaction.options.getSubcommand(false) == 'user') {
 					console.log (`SubcommandGroup ${interaction.options.getSubcommandGroup(false)}`);
 					console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
-					await showContempt(interaction);
+					//await showContempt(interaction);
+					await newShowContempt(interaction);
 				}
 				else if (interaction.options.getSubcommand(false) == 'all') {
 					console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
 					console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
-					await listAllContempts(interaction);
+					//await listAllContempts(interaction);
+					await newListAllContempts(interaction);
 				}
 			}
 		}
@@ -54,21 +54,23 @@ const command = {
 
 async function newSendContempt(interaction): Promise<void>
 {
-	const contemptToSend = convertSendContemptToCommand(interaction);
+	const contemptToSend = ContemptTools.convertInteractionToContempt(interaction);
 	ContemptTools.addAContempt(contemptToSend);
 }
 
-function convertSendContemptToCommand (interaction) : IContempt
+async function newShowContempt(interaction): Promise<void>
 {
-	const target = interaction.options.getMember('user');
-	// if member has a nickname on this server get that, otherwise get the member name
-	const targetName = target.guild.nickname ?? target.user.username;
-	const senderName = interaction.user.nickname ?? interaction.user.username;
-	return { 
-		guildId: target.guild.id,
-		target: { id: target.user.id, name: targetName},
-		sender: { id: interaction.user.id, name: senderName }
-	};
+	const contemptToGet = ContemptTools.convertInteractionToContempt(interaction);
+	let numContempts = await ContemptTools.getContemptCountForUser(contemptToGet.target);
+	
+	if (numContempts == 0){
+		console.log(`User ${contemptToGet.target.name} not found`);
+		await interaction.reply(`${contemptToGet.target.name} has no contempt (for now).`);
+		return;
+	}
+	
+	console.log(`~~User ${contemptToGet.target.name} has ${numContempts}.~~`);
+	await interaction.reply(`${contemptToGet.target.name} has ${numContempts} contempts.`);
 }
 
 async function sendContempt ( interaction ) {
@@ -139,6 +141,25 @@ async function showContempt ( interaction) {
 	await interaction.reply(`${name} has ${totalContempts} contempts.  I hate them so much.`);
 }
 
+async function newListAllContempts (interaction){
+	const allContempts = await ContemptTools.getAllContempt();
+
+	await interaction.reply({content: `Fetching all contempts sent...`, ephemeral: true} );
+
+	if (!allContempts){
+		await interaction.followUp(`No Contempts were found. You're are not hateful enough`);
+		return;
+	}
+
+	let outputString = "I hate you all this much: \n";
+	for (const [key, value] of allContempts.entries()){
+		outputString = outputString + `${key.name}: ${value} Contempts \n`;
+	}
+	console.log(outputString);
+
+	await interaction.followUp(outputString);
+}
+
 //need to change this to just show 1 guild contempts.
 async function listAllContempts (interaction) {
 
@@ -158,7 +179,6 @@ async function listAllContempts (interaction) {
 
 	await interaction.followUp(outputString);
 
-	console.log(`Temporary BP`);
 
 	
 }

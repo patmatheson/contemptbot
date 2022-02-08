@@ -136,6 +136,28 @@ function addContempt(userContempt): void{
 	}
 }
 
+async function newGetAllContempts(): Promise<Map<IDiscordUser, number>>
+{
+	let returnContempt = new Map();
+	let allContempt = await ContemptDoc.find().exec();
+
+	for (const docs of allContempt)
+	{
+		let id = docs.targetId;
+		let name = docs.targetName;
+		let currentUser = {id, name};
+		if (returnContempt.has(currentUser))
+		{
+			returnContempt.set(currentUser, returnContempt.get(currentUser) +1);
+		}
+		else
+		{
+			returnContempt.set(currentUser, 1);
+		} 
+	}
+	return returnContempt
+}
+
 async function getAllContempts(guildSettings){
 	const now = new Date();
 	let earliestDate:number = 0 - guildSettings.contemptDays;
@@ -224,6 +246,7 @@ export {
 	getdbconn,
 	newAddContempt,
 	newGetContempt,
+	newGetAllContempts,
 	UserContempt,
 	GuildContempt,
 	getContempts,

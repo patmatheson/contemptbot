@@ -1,6 +1,8 @@
-export interface IContemptDomain {
+export interface IContemptTools {
     addAContempt(contemptCommand: IContempt): Promise<void>;
     getContemptCountForUser(discordUser: IDiscordUser): Promise<number>;
+    getAllContempt():Promise<Map<IDiscordUser, number>>;
+    convertInteractionToContempt(interaction): IContempt;
 }
 
 export interface IDiscordUser

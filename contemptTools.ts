@@ -1,7 +1,7 @@
-import { IContemptDomain, IContempt, IDiscordUser } from './types';
-import { newAddContempt, newGetContempt } from './contemptDBTools';
+import { IContemptTools, IContempt, IDiscordUser } from './types';
+import { newAddContempt, newGetContempt, newGetAllContempts } from './contemptDBTools';
 
-class ContemptDomainImpl implements IContemptDomain
+class ContemptDomainImpl implements IContemptTools
 {
     async addAContempt(contemptInfo: IContempt): Promise<void>
     {
@@ -9,9 +9,25 @@ class ContemptDomainImpl implements IContemptDomain
     }
     async getContemptCountForUser(discordUser: IDiscordUser): Promise<number>
     {
-        return newGetContempt(discordUser);
+        return await newGetContempt(discordUser);
+    }
+    async getAllContempt(): Promise<Map<IDiscordUser, number>>
+    {   
+        return newGetAllContempts();
+    }
+    convertInteractionToContempt (interaction) : IContempt
+    {
+        const target = interaction.options.getMember('user');
+        // if member has a nickname on this server get that, otherwise get the member name
+        const targetName = target.guild.nickname ?? target.user.username;
+        const senderName = interaction.user.nickname ?? interaction.user.username;
+        return { 
+            guildId: target.guild.id,
+            target: { id: target.user.id, name: targetName},
+            sender: { id: interaction.user.id, name: senderName }
+        };
     }
 }
 
 // exporting Singleton
-export var ContemptTools = <IContemptDomain>new ContemptDomainImpl();
+export var ContemptTools = <IContemptTools>new ContemptDomainImpl();
