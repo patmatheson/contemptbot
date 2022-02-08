@@ -1,6 +1,5 @@
 import * as mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { MessagePayload } from 'discord.js';
 import * as process from 'process';
 import { IContempt, IDiscordUser } from './types';
 import { nowString, addDays } from './util';
@@ -114,7 +113,6 @@ async function newGetContempt (target: IDiscordUser): Promise<number>
 	
 	return numContempts;
 }
-
 
 function addContempt(userContempt): void{
 	const now = new Date();
