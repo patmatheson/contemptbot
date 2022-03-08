@@ -1,25 +1,14 @@
 import { connectDb } from './contemptDBTools';
 import * as fs from 'fs';
 import { Client, Collection, Intents } from 'discord.js';
-//import { token } from './config.json';
+import { token } from './config.json';
 import * as contemptCommand from './commands/contempt';
-import * as process from 'process';
 
-var http = require('http');
-
-http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('Iam m still alive\n');
-}).listen(80, "0.0.0.0");
-console.log('Server listening to port 80.');
-
-
-const token = process.env.DISCORD_BOT_TOKEN;
-// Create a new client instance
+//TODO Correctly setup commands
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 const commands:any = new Collection();
-// add little change
+
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 commands.set(contemptCommand.command.data.name, contemptCommand.command);
@@ -46,7 +35,7 @@ client.on('interactionCreate', async interaction => {
 	if (!command) return;
 
 	try {
-		await command.execute(interaction);
+		await command.execute(interaction, client);
 	}
 	catch (error) {
 		console.error(error);

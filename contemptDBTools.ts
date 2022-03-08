@@ -1,7 +1,8 @@
 import * as mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { MessagePayload } from 'discord.js';
 import * as process from 'process';
+import { IContempt, IDiscordUser } from './types';
+import { nowString, addDays } from './util';
 
 let dbconn = null;
 
@@ -9,21 +10,27 @@ function getdbconn() {
 	return dbconn;
 }
 
-function addDays(date, days) {
-	const result = new Date(date);
-	result.setDate(result.getDate() + days);
-	return result;
+//minor change
+
+async function connectDb(localDB?: boolean) {
+	let dbConnString = process.env.mongo_conn_string;
+	let mongoServer;
+	if (!dbConnString || localDB) {
+		mongoServer = await MongoMemoryServer.create();
+		dbConnString = mongoServer.getUri();
+		console.log("DB connection String issue, Starting fresh server."); 
+	}
+	let dbconn = await mongoose.connect(dbConnString, { dbName: 'verifyMASTER' });
+	return { 
+		dbconn: dbconn,
+		dbClose: async () => {
+			if (mongoServer){await mongoServer.stop()}
+			await dbconn.disconnect();
+		}
+	};
 }
 
-async function connectDb() {
-	let dbConnString = process.env.MONGO_CONN_STRING;
-	if (!dbConnString) {
-		const mongoServer = await MongoMemoryServer.create();
-		dbConnString = mongoServer.getUri();
-	}
-	dbconn = await mongoose.connect(dbConnString, { dbName: 'verifyMASTER' });
-	return dbconn;
-}
+
 
 interface IGuildContempt{
 	id: string;
@@ -77,7 +84,49 @@ const userContemptSchema = new mongoose.Schema({
 	},
 });
 
-function addContempt(userContempt){
+const contemptSchema = new mongoose.Schema({
+	guildId: String,
+	targetId: String,
+	targetName: String,
+	senderId: String,
+	senderName: String,
+	reason: String,
+	messageReason: String,
+	date: String,
+	timestamp: Number
+});
+
+const ContemptDoc = mongoose.model('contempt', contemptSchema);
+
+async function newAddContempt ( contempt: IContempt ): Promise<void>
+{
+	let currentTime = new Date();
+	const nowAsString = nowString(currentTime);
+	console.log(`Current date: ${nowAsString}`);
+
+	let newContempt = new ContemptDoc({
+		guildId: contempt.guildId,
+		targetId: contempt.target.id,
+		targetName: contempt.target.name,
+		senderId: contempt.sender.id,
+		senderName: contempt.sender.name,
+		reason: contempt.reason,
+		messageReason: contempt.messageReason,
+		date: nowAsString,
+		timestamp: currentTime
+	});
+
+	await newContempt.save();
+}
+
+async function newGetContempt (target: IDiscordUser): Promise<number>
+{
+	let numContempts = await ContemptDoc.count({ 'targetId': target.id });
+	
+	return numContempts;
+}
+
+function addContempt(userContempt): void{
 	const now = new Date();
 	const nowAsString = `${now.getUTCFullYear()}-${now.getUTCMonth() + 1}-${now.getUTCDate()}`;
 	console.log(`Current date: ${nowAsString}`);
@@ -95,6 +144,26 @@ function addContempt(userContempt){
 		const newMapItem = { dailyContempt: 1 };
 		userContempt.contempts.set(nowAsString, newMapItem);
 	}
+}
+
+async function newGetAllContempts(): Promise<Map<string, number>>
+{
+	let returnContempt = new Map();
+	let allContempt = await ContemptDoc.find().exec();
+
+	for (const docs of allContempt)
+	{
+		let currentUser = docs.targetId;
+		if (returnContempt.has(currentUser))
+		{
+			returnContempt.set(currentUser, returnContempt.get(currentUser) +1);
+		}
+		else
+		{
+			returnContempt.set(currentUser, 1);
+		} 
+	}
+	return returnContempt
 }
 
 async function getAllContempts(guildSettings){
@@ -148,6 +217,7 @@ async function getContempts(targetUser, guildSettings){
 	let totalContempt = 0;
 	for (const [key, value] of targetUser.contempts.entries()){
 		console.log(`${value.dailyContempt} contempts identified on ${key}.`);
+		
 		if (new Date(key) >= ageLimit){
 			console.log (`${value.dailyContempt} contempts identified on ${key}.  Adding to total, now ${totalContempt + value.dailyContempt}`);
 			totalContempt += value.dailyContempt;
@@ -182,6 +252,9 @@ const UserContempt = mongoose.model('UserContempt', userContemptSchema);
 export {
 	connectDb,
 	getdbconn,
+	newAddContempt,
+	newGetContempt,
+	newGetAllContempts,
 	UserContempt,
 	GuildContempt,
 	getContempts,
