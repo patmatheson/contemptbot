@@ -8,10 +8,37 @@ import { ContemptTools } from '../contemptTools';
 const command = {
 	data: new SlashCommandBuilder()
 		.setName('contempt')
-		.setDescription('Hate Hate hate hate Hate!')
-		.addUserOption(option => option.setName('target').setDescription('Select a user').setRequired(true)),
+		.addSubcommandGroup(subCommandGroup => 
+			subCommandGroup
+				.setName("send")
+				.setDescription("Sending Contempt")
+				.addSubcommand(subcommand =>
+					subcommand
+						.setName("user")
+						.setDescription("Send Contempt to a User")
+						.addUserOption(option =>
+							option
+								.setName("user")
+								.setDescription("Send Contempt to this User")
+								.setRequired(true))))
+		.addSubcommandGroup(subCommandGroup =>
+			subCommandGroup
+				.setName("list")
+				.setDescription("see how much contempt is out there")
+				.addSubcommand(subcommand =>
+					subcommand
+						.setName("user")
+						.setDescription("See how much contempt a user has")
+						.addUserOption(option =>
+							option
+								.setName("user")
+								.setDescription("See how much contempt this user has")))
+				.addSubcommand(subcommand =>
+					subcommand
+						.setName("all")
+						.setDescription("See how much contempt everyone has"))),
 
-	async execute(interaction, client) {
+	async execute(interaction, client): Promise<void> {
 		//check subcommand menu, subcommands
 		if(interaction.isCommand()) {
 			if (interaction.options.getSubcommandGroup(false) == 'send'){

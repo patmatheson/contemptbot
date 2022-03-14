@@ -1,13 +1,24 @@
+import { Client, Intents, Interaction, CommandInteraction } from 'discord.js';
+import { token, clientId, testChannelId } from './config.json';
 import * as contemptDBTools from './contemptDBTools';
+import { DiscordTools } from './discordTools';
 
+let count = 0;
 
 let dbConnection;
+const contemptClient = new Client({ intents: [Intents.FLAGS.GUILDS] });
+let testChannel;
+
+
+
 
 beforeAll( async () => {
     dbConnection = await contemptDBTools.connectDb(true);
+    await contemptClient.login(token);
+    testChannel = await contemptClient.channels.fetch(testChannelId);
 });
 
-test('add contempt to contempt test', async() => {
+test('add contempt to database test', async() => {
     let testContempt = { 
         guildId: "001",
         target: { id: "002", name: "pat"},
@@ -28,4 +39,5 @@ test('open database connection to mongo', () => {
 
 afterAll( async () => {
     dbConnection.dbClose();
+    contemptClient.destroy();
 });
