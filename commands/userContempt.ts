@@ -1,5 +1,4 @@
 import { ContextMenuCommandBuilder } from "@discordjs/builders";
-import * as discord from 'discord.js';
 
 const command = {
     data: new ContextMenuCommandBuilder()

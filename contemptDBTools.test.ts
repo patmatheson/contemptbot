@@ -32,7 +32,6 @@ test('add contempt to database test', async() => {
 });
 
 
-
 test('open database connection to mongo', () => {
     expect(1+2).toBe(3);
 });

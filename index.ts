@@ -5,15 +5,21 @@ import { token, clientId } from './config.json';
 import * as contemptCommand from './commands/contempt';
 import * as userCommand from './commands/userContempt';
 import { regContempt } from './globalCommands/regContempt';
+import { aliveProbe } from './util';
 
-//TODO Correctly setup commands
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+aliveProbe();
+
+const client: Client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 regContempt();
 
+const autocommands = new Collection();
+
 const commands:any = new Collection();
 
-//const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+
 
 commands.set(contemptCommand.command.data.name, contemptCommand.command);
 commands.set(userCommand.command.data.name, userCommand.command);
