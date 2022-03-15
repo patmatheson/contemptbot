@@ -8,6 +8,7 @@ export interface IContemptTools {
 export interface IDiscordTools{
     getUserNameFromID(client, UserId: string): Promise<string>;
     sendContempt (interaction, client): Promise<void>;
+    showContempt (interaction, client): Promise<void>;
 }
 
 export interface IDiscordUser

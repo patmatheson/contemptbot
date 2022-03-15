@@ -62,7 +62,8 @@ const command = {
 					console.log (`SubcommandGroup ${interaction.options.getSubcommandGroup(false)}`);
 					console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
 					//await showContempt(interaction);
-					await newShowContempt(interaction);
+					//await newShowContempt(interaction);
+					await DiscordTools.showContempt(interaction, client);
 				}
 				else if (interaction.options.getSubcommand(false) == 'all') {
 					console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
