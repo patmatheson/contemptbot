@@ -9,6 +9,7 @@ export interface IDiscordTools{
     getUserNameFromID(client, UserId: string): Promise<string>;
     sendContempt (interaction, client): Promise<void>;
     showContempt (interaction, client): Promise<void>;
+    listAllContempt (interaction, client): Promise<void>;
 }
 
 export interface IDiscordUser
