@@ -6,11 +6,6 @@ import * as contemptDBTools from './contemptDBTools';
 let count = 0;
 
 let dbConnection;
-const contemptClient = new Client({ intents: [Intents.FLAGS.GUILDS] });
-let testChannel;
-
-
-
 
 beforeAll( async () => {
     dbConnection = await contemptDBTools.connectDb(true);
@@ -38,5 +33,4 @@ test('open database connection to mongo', () => {
 
 afterAll( async () => {
     dbConnection.dbClose();
-    contemptClient.destroy();
 });
