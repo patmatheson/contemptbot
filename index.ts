@@ -24,7 +24,6 @@ if (TEST_MODE){
 
 const client: Client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
-
 regContempt();
 
 const commands:any = new Collection();

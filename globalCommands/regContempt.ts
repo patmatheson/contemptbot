@@ -1,9 +1,8 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { REST } from "@discordjs/rest";
 import { Routes } from 'discord-api-types/v9';
-import { token, clientId } from '../config.json';
 import * as fs from 'fs';
-import { TEST_MODE } from "..";
+import { TEST_MODE, token, clientId } from "..";
 
 
 
