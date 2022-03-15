@@ -1,7 +1,7 @@
 import { Client, Intents, Interaction, CommandInteraction } from 'discord.js';
-import { token, clientId, testChannelId } from './config.json';
+//import { token, clientId, testChannelId } from './config.json';
 import * as contemptDBTools from './contemptDBTools';
-import { DiscordTools } from './discordTools';
+//import { DiscordTools } from './discordTools';
 
 let count = 0;
 
@@ -14,8 +14,8 @@ let testChannel;
 
 beforeAll( async () => {
     dbConnection = await contemptDBTools.connectDb(true);
-    await contemptClient.login(token);
-    testChannel = await contemptClient.channels.fetch(testChannelId);
+    //await contemptClient.login(token);
+    //testChannel = await contemptClient.channels.fetch(testChannelId);
 });
 
 test('add contempt to database test', async() => {
