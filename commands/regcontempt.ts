@@ -6,7 +6,7 @@ import * as fs from 'fs';
 
 
 
-const regContemptCommmand = {
+const command = {
     data: new SlashCommandBuilder()
         .setName('regcontempt')
         .setDescription('Register Commands for ContemptBot on this Server'),
@@ -38,5 +38,5 @@ const regContemptCommmand = {
 }
 
 export {
-    regContemptCommmand,
+    command,
 }

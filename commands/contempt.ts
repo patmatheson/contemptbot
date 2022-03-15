@@ -47,7 +47,8 @@ const command = {
 					console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
 					
 					//await sendContempt(interaction);
-					await newSendContempt(interaction, client);
+					//await newSendContempt(interaction, client);
+					await DiscordTools.sendContempt(interaction, client);
 				}
 				else if (interaction.options.getSubcommand(false) == 'scorn') {
 					console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
@@ -74,7 +75,7 @@ const command = {
 		else if (interaction.isContextMenu()){
 			if (interaction.commandName == 'Send Contempt'){
 				console.log (`Context Command ${interaction.commandName} selected...`);
-				await sendContempt(interaction);
+				await oldSendContempt(interaction);
 			}
 		}
 	},
@@ -104,7 +105,7 @@ async function newShowContempt(interaction): Promise<void>
 	await interaction.reply(`${contemptToGet.target.name} has ${numContempts} contempts.`);
 }
 
-async function sendContempt ( interaction ) {
+async function oldSendContempt ( interaction ) {
 		// get target member information from message interaction.  Uses options to get target, not sender
 		const member = interaction.options.getMember('user');
 		// if member has a nickname on this server get that, otherwise get the member name

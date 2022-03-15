@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import { Client, Collection, Intents } from 'discord.js';
 import { token } from './config.json';
 import * as contemptCommand from './commands/contempt';
+import * as userCommand from './commands/userContempt';
 
 //TODO Correctly setup commands
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
@@ -12,7 +13,7 @@ const commands:any = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 commands.set(contemptCommand.command.data.name, contemptCommand.command);
-commands.set("Send Contempt", contemptCommand.command);
+commands.set(userCommand.command.data.name, userCommand.command);
 
 
 // When the client is ready, run this code (only once)
