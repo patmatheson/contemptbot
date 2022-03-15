@@ -73,105 +73,7 @@ const command = {
 				}
 			}
 		}
-		else if (interaction.isContextMenu()){
-			if (interaction.commandName == 'Send Contempt'){
-				console.log (`Context Command ${interaction.commandName} selected...`);
-				await oldSendContempt(interaction);
-			}
-		}
 	},
-}
-
-async function newSendContempt(interaction, client): Promise<void>
-{
-	const contemptToSend = ContemptTools.convertInteractionToContempt(interaction);
-	ContemptTools.addAContempt(contemptToSend);
-	let foundName = await DiscordTools.getUserNameFromID(client, contemptToSend.target.id);
-	let numContempts = await ContemptTools.getContemptCountForUser(contemptToSend.target);
-	await interaction.reply(`I hate you so much, ${foundName}!  You have ${numContempts} contempt!`);
-}
-
-async function newShowContempt(interaction): Promise<void>
-{
-	const contemptToGet = ContemptTools.convertInteractionToContempt(interaction);
-	let numContempts = await ContemptTools.getContemptCountForUser(contemptToGet.target);
-	
-	if (numContempts == 0){
-		console.log(`User ${contemptToGet.target.name} not found`);
-		await interaction.reply(`${contemptToGet.target.name} has no contempt (for now).`);
-		return;
-	}
-	
-	console.log(`~~User ${contemptToGet.target.name} has ${numContempts}.~~`);
-	await interaction.reply(`${contemptToGet.target.name} has ${numContempts} contempts.`);
-}
-
-async function oldSendContempt ( interaction ) {
-		// get target member information from message interaction.  Uses options to get target, not sender
-		const member = interaction.options.getMember('user');
-		// if member has a nickname on this server get that, otherwise get the member name
-		const name = member.guild.nickname ?? member.user.username;
-
-		// assign the combination of guild/user id for DB id number, so each user is tracked per guild
-		const userContemptDocumentId = `${member.guild.id}/${member.user.id}`;
-		console.log (`userContemptDocumentId: ${userContemptDocumentId}`);
-
-		const guildContempt = await GuildContempt.findGuildOrDefault(member.guild.id);
-		console.log(`guildContempt settings from DB: ${guildContempt}`);
-	
-
-		// check the database for documents that match both the guild and member id.
-		let userContempt = await UserContempt.findOne({ guildID: member.guild.id, userId: member.user.id }).exec();
-		console.log(`userContemptfrom DB: ${userContempt}`);
-
-		// Create new document if none exists for this guild/user
-		if (userContempt == null) {
-			console.log('new user!');
-
-			userContempt = new UserContempt();
-			userContempt.guildId = interaction.guild.id;
-			userContempt.userId = member.user.id;
-			userContempt.userName = name;
-			userContempt.id = userContemptDocumentId;
-		}
-
-		userContempt.addContempt();
-
-		await userContempt.save();
-		
-		let totalContempts = await userContempt.getContempts(guildContempt);
-		console.log(`contemptCount: ${totalContempts}`);
-
-		// get the bot to send a message so you know it hates the target too.
-		await interaction.reply(`I hate you: ${name}! You have ${totalContempts} contempts`);
-}
-
-//this is very close to sendContempt, consider making these 1 function with variable to determine send/receive
-async function showContempt ( interaction) {
-	// get target member information from message interaction.  Uses options to get target, not sender
-	const member = interaction.options.getMember('user');
-	// if member has a nickname on this server get that, otherwise get the member name
-	const name = member.guild.nickname ?? member.user.username;
-
-	const userContemptDocumentId = `${member.guild.id}/${member.user.id}`;
-	console.log (`userContemptDocumentId: ${userContemptDocumentId}`);
-
-	const guildContempt = await GuildContempt.findGuildOrDefault(member.guild.id);
-	console.log(`guildContempt settings from DB: ${guildContempt}`);
-
-	// check the database for documents that match both the guild and member id.
-	let userContempt = await UserContempt.findOne({ guildID: member.guild.id, userId: member.user.id }).exec();
-	console.log(`userContemptfrom DB: ${userContempt}`);
-
-	if (userContempt == null) {
-		console.log(`User ${name} not found`);
-		await interaction.reply(`${name} has no contempt (for now).`);
-		return;
-	}
-
-	let totalContempts = await userContempt.getContempts(guildContempt);
-	console.log(`contemptCount: ${totalContempts}`);
-	await interaction.reply(`${name} has ${totalContempts} contempts.  I hate them so much.`);
 }
 
 async function newListAllContempts (interaction, client){
@@ -193,30 +95,6 @@ async function newListAllContempts (interaction, client){
 
 	await interaction.followUp(outputString);
 }
-
-//need to change this to just show 1 guild contempts.
-async function listAllContempts (interaction) {
-
-	const guildContempt = await GuildContempt.findGuildOrDefault(interaction.member.guild.id);
-	console.log(`guildContempt settings from DB: ${guildContempt}`);
-
-	await interaction.reply({content: `Fetching all contempts sent...`, ephemeral: true} );
-
-	let userContempt = await UserContempt.findOne({});
-	let allContempt = await userContempt.getAllContempts(guildContempt);
-
-	let outputString = "I hate you all this much: \n";
-	for (const [key, value] of allContempt.entries()){
-		outputString = outputString + `${key}: ${value} Contempts \n`;
-	}
-	console.log(outputString);
-
-	await interaction.followUp(outputString);
-
-
-	
-}
-
 
 export {
 	command,
