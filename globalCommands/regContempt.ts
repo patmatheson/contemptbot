@@ -3,6 +3,7 @@ import { REST } from "@discordjs/rest";
 import { Routes } from 'discord-api-types/v9';
 import { token, clientId } from '../config.json';
 import * as fs from 'fs';
+import { TEST_MODE } from "..";
 
 
 
@@ -12,11 +13,7 @@ const command = {
         .setDescription('Register Commands for ContemptBot on this Server'),
 
     async execute (interaction, client){
-        const TEST_MODE = true;
-
-        const commandFiles = fs
-            .readdirSync('../commands')
-            .filter(file => file.endsWith('.js'));
+        const commandFiles = fs.readdirSync('../commands').filter(file => file.endsWith('.js'));
         
         const commands = [];
         
