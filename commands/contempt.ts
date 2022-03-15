@@ -1,8 +1,5 @@
-import { UserContempt, getContempts, addContempt, GuildContempt, newGetAllContempts } from '../contemptDBTools.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { DiscordAPIError } from 'discord.js';
 import { DiscordTools } from '../discordTools';
-import { ContemptTools } from '../contemptTools';
 
 
 const command = {
@@ -69,31 +66,12 @@ const command = {
 					console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
 					console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
 					//await listAllContempts(interaction);
-					await newListAllContempts(interaction, client);
+					//await newListAllContempts(interaction, client);
+					await DiscordTools.listAllContempt(interaction, client);
 				}
 			}
 		}
-	},
-}
-
-async function newListAllContempts (interaction, client){
-	await interaction.reply({content: `Fetching all contempts sent...`, ephemeral: true} );
-	
-	const allContempts = await ContemptTools.getAllContempt();
-	
-	if (!allContempts){
-		await interaction.followUp(`No Contempts were found. You're are not hateful enough`);
-		return;
 	}
-
-	let outputString = "I hate you all this much: \n";
-	for (const [key, value] of allContempts.entries()){
-		let name = await DiscordTools.getUserNameFromID(client, key);
-		outputString = outputString + `${name}: ${value} Contempts \n`;
-	}
-	console.log(outputString);
-
-	await interaction.followUp(outputString);
 }
 
 export {
