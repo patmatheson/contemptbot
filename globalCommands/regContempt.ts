@@ -42,7 +42,8 @@ const command = {
 }
 
 export async function regContempt (){
-    const regCommand = command.data.toJSON();
+    const regCommand = [];
+    regCommand.push(command.data.toJSON());
 
     const rest = new REST({version: '9'}).setToken(token);
     

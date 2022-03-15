@@ -13,7 +13,7 @@ regContempt();
 
 const commands:any = new Collection();
 
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+//const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 commands.set(contemptCommand.command.data.name, contemptCommand.command);
 commands.set(userCommand.command.data.name, userCommand.command);
