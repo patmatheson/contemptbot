@@ -1,12 +1,15 @@
 import { connectDb } from './contemptDBTools';
 import * as fs from 'fs';
 import { Client, Collection, Intents } from 'discord.js';
-import { token } from './config.json';
+import { token, clientId } from './config.json';
 import * as contemptCommand from './commands/contempt';
 import * as userCommand from './commands/userContempt';
+import { regContempt } from './globalCommands/regContempt';
 
 //TODO Correctly setup commands
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+
+regContempt();
 
 const commands:any = new Collection();
 
