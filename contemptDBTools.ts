@@ -13,7 +13,7 @@ function getdbconn() {
 //minor change
 
 async function connectDb(localDB?: boolean) {
-	let dbConnString = process.env.mongo_conn_string;
+	let dbConnString = process.env.MONGO_CONN_STRING;
 	let mongoServer;
 	if (!dbConnString || localDB) {
 		mongoServer = await MongoMemoryServer.create();

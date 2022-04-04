@@ -2,3 +2,4 @@ node_modules
 yarn-error.log
 config.json
 /out
+azure/dockerlocal.txt.bak
