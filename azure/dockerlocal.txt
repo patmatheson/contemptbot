@@ -1,0 +1,11 @@
+docker deploy local:
+
+cp -R /mnt/c/Users/Cniz/bots/contemptbot /home/cniz/contempt
+
+sudo docker build /home/cniz/contempt/contemptbot -t contempt-bot
+
+sudo docker run \
+-e MONGO_CONN_STRING='' \
+-e DISCORD_BOT_TOKEN='' \
+-e DISCORD_BOT_ID='' \
+contempt-bot

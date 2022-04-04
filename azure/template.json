@@ -1,0 +1,98 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-08-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "defaultValue": "eastus",
+            "type": "String"
+        },
+        "environment_name": {
+            "defaultValue": "contempt",
+            "type": "String"
+        },
+        "discord-bot-key": {
+            "type": "SecureString"
+        },
+        "discord-bot-id": {
+            "type": "SecureString"
+		},
+		"acrpassword": {
+            "type": "SecureString"
+        },
+        "mongo-conn-string": {
+            "type": "SecureString"
+        }
+    },
+    "variables": {},
+    "resources": [
+    {
+        "name": "contempt",
+        "type": "Microsoft.Web/containerApps",
+        "apiVersion": "2021-03-01",
+        "kind": "containerapp",
+        "location": "[parameters('location')]",
+        "properties": {
+            "kubeEnvironmentId": "[resourceId('Microsoft.Web/kubeEnvironments', parameters('environment_name'))]",
+            "configuration": {
+                "ingress": {
+                    "external": true,
+                    "targetPort": 80,
+                    "transport": "auto"
+                },
+                "activeRevisionsMode": "single",
+				"registries": [
+					{
+					  "server": "schonhoffer.azurecr.io",
+					  "username": "schonhoffer",
+					  "passwordSecretRef": "schonhofferazurecrio-schonhoffer"
+					}
+				  ],
+                "secrets": [
+                {
+                    "name": "discord-bot-key",
+                    "value": "[parameters('discord-bot-key')]"
+                },
+				{
+                    "name": "discord-bot-id",
+                    "value": "[parameters('discord-bot-id')]"
+                },
+				{
+                    "name": "schonhofferazurecrio-schonhoffer",
+                    "value": "[parameters('acrpassword')]"
+                },
+				{
+                    "name": "mongo-conn-string",
+                    "value": "[parameters('mongo-conn-string')]"
+                }
+				]
+            },
+            "template": {
+                "containers": [
+                    {
+                        "image": "schonhoffer.azurecr.io/contempt:66cd509e3a84cde301be8622c7208fcc6a711138",
+                        "name": "contempt",
+                        "env": [
+                            {
+                                "name": "DISCORD_BOT_TOKEN",
+                                "secretref": "discord-bot-key"
+                            },
+                            {
+                                "name": "DISCORD_BOT_ID",
+                                "secretref": "discord-bot-id"
+                            },
+							{
+                                "name": "MONGO_CONN_STRING",
+                                "secretref": "mongo-conn-string"
+                            }
+                        ]
+                    }
+                ],
+                "scale": {
+                    "minReplicas": 1,
+                    "maxReplicas": 10,
+                    "rules": []
+                }
+            }
+        }
+    }]
+}
