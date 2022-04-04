@@ -5,7 +5,7 @@ cp -R /mnt/c/Users/Cniz/bots/contemptbot /home/cniz/contempt
 sudo docker build /home/cniz/contempt/contemptbot -t contempt-bot
 
 sudo docker run \
--e MONGO_CONN_STRING='mongodb+srv://contempt:2hbc9i324u8fu892n38hvbs032@contempt0.gbi5k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority' \
--e DISCORD_BOT_TOKEN='OTEyMTA0MzA5MTYyOTIxOTg1.YZrFVQ.7PaS2Mph9MF1Ei1I2ZcCPpL-jPI' \
--e DISCORD_BOT_ID='912104309162921985' \
+-e MONGO_CONN_STRING='' \
+-e DISCORD_BOT_TOKEN='' \
+-e DISCORD_BOT_ID='' \
 contempt-bot
