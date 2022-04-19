@@ -1,3 +1,4 @@
+import { SystemChannelFlags } from 'discord.js';
 import { ContemptTools } from './contemptTools';
 import { IDiscordTools } from './types';
 
@@ -6,9 +7,14 @@ class DiscordToolsImpl implements IDiscordTools{
     
     async getUserNameFromID(client, userId: string): Promise<string>
     {
-        let user = await client.users.cache.get(userId);
+        let user;
+        try {
+            user = await client.users.fetch(userId);
+        } catch (e) {
+            return `Error: ${e.message}`;
+        }
         if (!user){
-            return 'Unknown User';
+            return 'General Hatred';
         }
         return user.username;
     }

@@ -6,7 +6,7 @@ import * as userCommand from './commands/userContempt';
 import { regContempt } from './globalCommands/regContempt';
 import { aliveProbe } from './util';
 
-const TEST_MODE: boolean = false;
+const TEST_MODE: boolean = true;
 
 aliveProbe();
 
