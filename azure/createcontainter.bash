@@ -31,11 +31,11 @@ az deployment group create --resource-group "$RESOURCE_GROUP" \
   --template-file ./template.json \
   --parameters \
     environment_name="$CONTAINERAPPS_ENVIRONMENT" \
-	discord-bot-key="$DISCORD_BOT_KEY' \
+	discord-bot-key="$DISCORD_BOT_KEY" \
 	discord-bot-id="$DISCORD_BOT_ID" \
 	acrpassword="$REGISTRY_PASSWORD" \
 	mongo-conn-string="$MONGO_CONN_STRING" \
-    location="$LOCATION"	
+    location="$LOCATION"
 
 
 az containerapp create \
@@ -46,4 +46,3 @@ az containerapp create \
   --registry-server $REGISTRY_LOGIN_SERVER \
   --registry-username $REGISTRY_USERNAME \
   --registry-password $REGISTRY_PASSWORD
-  
