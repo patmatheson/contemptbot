@@ -56,4 +56,4 @@ jobs:
             echo "Installing containerapp extension"
             az extension add --name containerapp
             echo "Starting Deploying"
-            az containerapp update -n contempt -g contempt -i schonhoffer.azurecr.io/contempt:${{ github.sha }} --registry-server schonhoffer.azurecr.io --registry-username  ${{ secrets.REGISTRY_USERNAME }} --registry-password ${{ secrets.REGISTRY_PASSWORD }} --debug
+            az containerapp update -n contempt -g contempt -i schonhoffer.azurecr.io/contempt:${{ github.sha }} --debug
