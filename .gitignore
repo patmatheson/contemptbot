@@ -3,3 +3,4 @@ yarn-error.log
 config.json
 /out
 azure/dockerlocal.txt.bak
+azure/createcontainter.bash.bak
