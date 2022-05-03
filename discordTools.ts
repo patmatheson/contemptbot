@@ -36,7 +36,7 @@ class DiscordToolsImpl implements IDiscordTools{
     	const contemptToGet = ContemptTools.convertInteractionToContempt(interaction);
 	    let numContempts = await ContemptTools.getContemptCountForUser(contemptToGet.target);
         
-        let TargetName = this.getUserNameFromID(client, contemptToGet.target.id)
+        let TargetName = await this.getUserNameFromID(client, contemptToGet.target.id)
 
         if (numContempts == 0){
             console.log(`User ${TargetName} not found`);
