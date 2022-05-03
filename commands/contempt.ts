@@ -17,6 +17,20 @@ const command = {
 							option
 								.setName("user")
 								.setDescription("Send Contempt to this User")
+								.setRequired(true)))
+				.addSubcommand(subcommand =>
+					subcommand
+						.setName("reason")
+						.setDescription("Send a contempt with a reason.")
+						.addUserOption(option =>
+							option
+								.setName("user")
+								.setDescription("Send Contempt to this user")
+								.setRequired(true))
+						.addUserOption(option =>
+							option
+								.setName("reason")
+								.setDescription("Send Contempt for this reason")
 								.setRequired(true))))
 		.addSubcommandGroup(subCommandGroup =>
 			subCommandGroup
@@ -47,7 +61,7 @@ const command = {
 					//await newSendContempt(interaction, client);
 					await DiscordTools.sendContempt(interaction, client);
 				}
-				else if (interaction.options.getSubcommand(false) == 'scorn') {
+				else if (interaction.options.getSubcommand(false) == 'reason') {
 					console.log (`SubcommandGroup :${interaction.options.getSubcommandGroup(false)}`);
 					console.log (`Subcommand ${interaction.options.getSubcommand(false)}`);
 					// Send Scorn TODO
