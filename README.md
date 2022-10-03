@@ -9,3 +9,4 @@ Bot Operation:
 /contempt list user #discordUsername# - See how many contempts someone has  
 /contempt list all - Show all contempts on discord server  
 
+A contempt can also be sent from User Context Menu, under Apps > Send Contempt
