@@ -4,7 +4,7 @@ Based on a system found in an obscure board game, ContemptBot is a discord bot t
 
 Add the bot to your server here: https://bit.ly/3yfsdtM
 
-##Bot Operation:  
+## Bot Operation:  
 /contempt send user #discordUsername# - Send a Contempt  
 /contempt list user #discordUsername# - See how many contempts someone has  
 /contempt list all - Show all contempts on discord server  
