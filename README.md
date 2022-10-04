@@ -1,3 +1,5 @@
+https://badgen.net/npm/v/express
+
 # contemptbot
 
 Based on a system found in an obscure board game, ContemptBot is a discord bot that allows you to let you know when your friends and colleagues have done something contempt worthy!
